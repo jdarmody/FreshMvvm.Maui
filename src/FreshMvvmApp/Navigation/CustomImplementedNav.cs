@@ -62,7 +62,7 @@ namespace FreshMvvmApp
 			Flyout = new NavigationPage(_menuPage) { Title = "Menu" };
 		}
 
-        public virtual async Task PushPage (Page page, FreshBasePageModel model, bool modal = false, bool animated = true)
+        public virtual async Task PushPage (Page page, IFreshPageModel model, bool modal = false, bool animated = true)
 		{
 			if (modal)
                 await Navigation.PushModalAsync (new NavigationPage(page), animated);
@@ -94,16 +94,16 @@ namespace FreshMvvmApp
             }
         }
 
-        public Task<FreshBasePageModel> SwitchSelectedRootPageModel<T> () where T : FreshBasePageModel
+        public Task<IFreshPageModel> SwitchSelectedRootPageModel<T> () where T : class, IFreshPageModel
         {
-            if (_contactsPage.GetModel ().GetType ().FullName == typeof (T).FullName) {
+            if (_contactsPage.GetPageModel ().GetType ().FullName == typeof (T).FullName) {
                 _tabbedNavigationPage.CurrentPage = _contactsPage;
-                return Task.FromResult(_contactsPage.GetModel ());
+                return Task.FromResult(_contactsPage.GetPageModel());
             }
 
-            if (_quotesPage.GetModel ().GetType ().FullName == typeof (T).FullName) {
+            if (_quotesPage.GetPageModel ().GetType ().FullName == typeof (T).FullName) {
                 _tabbedNavigationPage.CurrentPage = _quotesPage;
-                return Task.FromResult(_quotesPage.GetModel ());
+                return Task.FromResult(_quotesPage.GetPageModel ());
             }
 
             throw new Exception ("Cannot do this");

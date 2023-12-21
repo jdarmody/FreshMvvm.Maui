@@ -8,11 +8,11 @@ namespace FreshMvvm.Maui
     {
         public FreshNavigationContainer (Page page) : base(page)
         {
-            var pageModel = page.GetModel ();
+            var pageModel = page.GetPageModel ();
             if (pageModel == null)
-                throw new InvalidCastException("BindingContext was not a FreshBasePageModel on this Page");
+                throw new InvalidCastException("BindingContext was not a IFreshPageModel on this Page");
 
-            pageModel.CurrentNavigationService = this;
+            pageModel.SetCurrentNavigationService (this);
         }
 
         internal Page CreateContainerPageSafe (Page page)
@@ -28,7 +28,7 @@ namespace FreshMvvm.Maui
             return new NavigationPage (page);
         }
 
-		public virtual Task PushPage (Page page, FreshBasePageModel model, bool modal = false, bool animate = true)
+		public virtual Task PushPage (Page page, IFreshPageModel model, bool modal = false, bool animate = true)
         {
             if (modal)
                 return Navigation.PushModalAsync (CreateContainerPageSafe (page), animate);
@@ -52,7 +52,7 @@ namespace FreshMvvm.Maui
             this.NotifyAllChildrenPopped();
         }
 
-        public Task<FreshBasePageModel> SwitchSelectedRootPageModel<T>() where T : FreshBasePageModel
+        public Task<IFreshPageModel> SwitchSelectedRootPageModel<T>() where T : class, IFreshPageModel
         {
             throw new Exception("This navigation container has no selected roots, just a single root");
         }

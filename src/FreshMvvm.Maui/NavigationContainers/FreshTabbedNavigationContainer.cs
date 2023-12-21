@@ -11,10 +11,10 @@ namespace FreshMvvm.Maui
         List<Page> _tabs = new List<Page>();
         public IEnumerable<Page> TabbedPages { get { return _tabs; } }
 
-        public virtual Page AddTab<T> (string title, string icon, object data = null) where T : FreshBasePageModel
+        public virtual Page AddTab<T> (string title, string icon, object data = null) where T : class, IFreshPageModel
         {
             var page = FreshPageModelResolver.ResolvePageModel<T> (data);
-            page.GetModel ().CurrentNavigationService = this;
+            page.GetPageModel ().SetCurrentNavigationService (this);
             _tabs.Add (page);
             var navigationContainer = CreateContainerPageSafe (page);
             navigationContainer.Title = title;
@@ -37,7 +37,7 @@ namespace FreshMvvm.Maui
             return new NavigationPage (page);
         }
 
-		public System.Threading.Tasks.Task PushPage (Page page, FreshBasePageModel model, bool modal = false, bool animate = true)
+		public System.Threading.Tasks.Task PushPage (Page page, IFreshPageModel model, bool modal = false, bool animate = true)
         {
             if (modal)
                 return this.CurrentPage.Navigation.PushModalAsync (CreateContainerPageSafe (page));
@@ -67,16 +67,16 @@ namespace FreshMvvm.Maui
             }
         }
             
-        public Task<FreshBasePageModel> SwitchSelectedRootPageModel<T>() where T : FreshBasePageModel
+        public Task<IFreshPageModel> SwitchSelectedRootPageModel<T>() where T : class, IFreshPageModel
         {
-            var page = _tabs.FindIndex(o => o.GetModel().GetType().FullName == typeof(T).FullName);
+            var page = _tabs.FindIndex(o => o.GetPageModel().GetType().FullName == typeof(T).FullName);
 
             if (page > -1)
             {
                 CurrentPage = this.Children[page];
                 var topOfStack = CurrentPage.Navigation.NavigationStack.LastOrDefault();
                 if (topOfStack != null)
-                    return Task.FromResult(topOfStack.GetModel());
+                    return Task.FromResult(topOfStack.GetPageModel());
 
             }
             return null;

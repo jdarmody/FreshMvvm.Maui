@@ -9,9 +9,9 @@ namespace FreshMvvm.Maui
     public class PageModelCoreMethods : IPageModelCoreMethods
     {
         Page _currentPage;
-        FreshBasePageModel _currentPageModel;
+        IFreshPageModel _currentPageModel;
 
-		public PageModelCoreMethods (Page currentPage, FreshBasePageModel pageModel)
+		public PageModelCoreMethods (Page currentPage, IFreshPageModel pageModel)
         {
             _currentPage = currentPage;
 			_currentPageModel = pageModel;
@@ -37,7 +37,7 @@ namespace FreshMvvm.Maui
             return false;
         }
 
-        public async Task PushPageModel<T>(Action<T> setPageModel, bool modal = false, bool animate = true) where T : FreshBasePageModel
+        public async Task PushPageModel<T>(Action<T> setPageModel, bool modal = false, bool animate = true) where T : class, IFreshPageModel
         {
             T pageModel = DependancyService.Resolve<T>();
 
@@ -46,14 +46,14 @@ namespace FreshMvvm.Maui
             await PushPageModel(pageModel, null, modal, animate);
         }
 
-        public async Task PushPageModel<T>(object data, bool modal = false, bool animate = true) where T : FreshBasePageModel
+        public async Task PushPageModel<T>(object data, bool modal = false, bool animate = true) where T : class, IFreshPageModel
         {
             T pageModel = DependancyService.Resolve<T>();
 
             await PushPageModel(pageModel, data, modal, animate);
         }
 
-        public async Task PushPageModel<T, TPage> (object data, bool modal = false, bool animate = true) where T : FreshBasePageModel where TPage : Page
+        public async Task PushPageModel<T, TPage> (object data, bool modal = false, bool animate = true) where T : class, IFreshPageModel where TPage : Page
         {
             T pageModel = DependancyService.Resolve<T> ();
 			TPage page = DependancyService.Resolve<TPage>();
@@ -68,24 +68,24 @@ namespace FreshMvvm.Maui
 
         public Task PushPageModel(Type pageModelType, object data, bool modal = false, bool animate = true)
         {
-            var pageModel = DependancyService.Resolve(pageModelType) as FreshBasePageModel;
+            var pageModel = DependancyService.Resolve(pageModelType) as IFreshPageModel;
 
             return PushPageModel(pageModel, data, modal, animate);
         }
 
-        async Task PushPageModel(FreshBasePageModel pageModel, object data, bool modal = false, bool animate = true)
+        async Task PushPageModel(IFreshPageModel pageModel, object data, bool modal = false, bool animate = true)
         {
             var page = FreshPageModelResolver.ResolvePageModel(data, pageModel);
             await PushPageModelWithPage(page, pageModel, data, modal, animate);
         }
 
-        async Task PushPageModelWithPage(Page page, FreshBasePageModel pageModel, object data, bool modal = false, bool animate = true)
+        async Task PushPageModelWithPage(Page page, IFreshPageModel pageModel, object data, bool modal = false, bool animate = true)
         {
             pageModel.PreviousPageModel = _currentPageModel; //This is the previous page model because it's push to a new one, and this is current
-            pageModel.CurrentNavigationService = _currentPageModel.CurrentNavigationService;
+            pageModel.SetCurrentNavigationService(_currentPageModel.CurrentNavigationService);
 
             if (pageModel.PreviousNavigationService != null)
-                pageModel.PreviousNavigationService = _currentPageModel.PreviousNavigationService;
+                pageModel.SetPreviousNavigationService(_currentPageModel.PreviousNavigationService);
 
             if (page is FreshMasterDetailNavigationContainer) 
             {
@@ -133,32 +133,32 @@ namespace FreshMvvm.Maui
             await PopPageModel (modal, animate);
         }
 
-        public Task PushPageModel<T> (bool animate = true) where T : FreshBasePageModel
+        public Task PushPageModel<T> (bool animate = true) where T : class, IFreshPageModel
         {
             return PushPageModel<T> (null, false, animate);
         }
 
-        public Task PushPageModel<T, TPage> (bool animate = true) where T : FreshBasePageModel where TPage : Page
+        public Task PushPageModel<T, TPage> (bool animate = true) where T : class, IFreshPageModel where TPage : Page
         {
             return PushPageModel<T, TPage> (null, animate);
         }
 
-        public Task PushNewNavigationServiceModal (FreshTabbedNavigationContainer tabbedNavigationContainer, FreshBasePageModel basePageModel = null, bool animate = true)
+        public Task PushNewNavigationServiceModal (FreshTabbedNavigationContainer tabbedNavigationContainer, IFreshPageModel basePageModel = null, bool animate = true)
         {
-            var models = tabbedNavigationContainer.TabbedPages.Select (o => o.GetModel ()).ToList();
+            var models = tabbedNavigationContainer.TabbedPages.Select (o => o.GetPageModel ()).ToList();
             if (basePageModel != null)
                 models.Add (basePageModel);
             return PushNewNavigationServiceModal (tabbedNavigationContainer, models.ToArray (), animate);
         }
 
-        public Task PushNewNavigationServiceModal (FreshMasterDetailNavigationContainer masterDetailContainer, FreshBasePageModel basePageModel = null, bool animate = true)
+        public Task PushNewNavigationServiceModal (FreshMasterDetailNavigationContainer masterDetailContainer, IFreshPageModel basePageModel = null, bool animate = true)
         {
             var models = masterDetailContainer.Pages.Select (o => 
                 {
                     if (o.Value is NavigationPage)
-                        return ((NavigationPage)o.Value).CurrentPage.GetModel ();
+                        return ((NavigationPage)o.Value).CurrentPage.GetPageModel ();
                     else
-                        return o.Value.GetModel();
+                        return o.Value.GetPageModel();
                 }).ToList();
 
             if (basePageModel != null)
@@ -167,20 +167,20 @@ namespace FreshMvvm.Maui
             return PushNewNavigationServiceModal (masterDetailContainer, models.ToArray(), animate);
         }
 
-        public Task PushNewNavigationServiceModal (IFreshNavigationService newNavigationService, FreshBasePageModel basePageModels, bool animate = true)
+        public Task PushNewNavigationServiceModal (IFreshNavigationService newNavigationService, IFreshPageModel basePageModels, bool animate = true)
         {
-            return PushNewNavigationServiceModal (newNavigationService, new FreshBasePageModel[] { basePageModels }, animate);
+            return PushNewNavigationServiceModal (newNavigationService, new IFreshPageModel[] { basePageModels }, animate);
         }
 
-        public async Task PushNewNavigationServiceModal (IFreshNavigationService newNavigationService, FreshBasePageModel[] basePageModels, bool animate = true)
+        public async Task PushNewNavigationServiceModal (IFreshNavigationService newNavigationService, IFreshPageModel[] basePageModels, bool animate = true)
         {
             var navPage = newNavigationService as Page;
             if (navPage == null)
                 throw new Exception ("Navigation service is not Page");
 
             foreach (var pageModel in basePageModels) {
-                pageModel.CurrentNavigationService = newNavigationService;
-                pageModel.PreviousNavigationService = _currentPageModel.CurrentNavigationService;
+                pageModel.SetCurrentNavigationService(newNavigationService);
+                pageModel.SetPreviousNavigationService(_currentPageModel.CurrentNavigationService);
                 pageModel.IsModalFirstChild = true;
             }
 
@@ -213,7 +213,7 @@ namespace FreshMvvm.Maui
         /// <summary>
         /// This method switches the selected main page, TabbedPage the selected tab or if MasterDetail, works with custom pages also
         /// </summary>
-        public Task<FreshBasePageModel> SwitchSelectedRootPageModel<T>() where T : FreshBasePageModel
+        public Task<IFreshPageModel> SwitchSelectedRootPageModel<T>() where T : class, IFreshPageModel
         {
             var currentNavigationService = _currentPageModel.CurrentNavigationService;
 
@@ -223,7 +223,7 @@ namespace FreshMvvm.Maui
         /// <summary>
         /// This method is used when you want to switch the selected page, 
         /// </summary>
-        public Task<FreshBasePageModel> SwitchSelectedTab<T>() where T : FreshBasePageModel
+        public Task<IFreshPageModel> SwitchSelectedTab<T>() where T : class, IFreshPageModel
         {
             return SwitchSelectedRootPageModel<T>();
         }
@@ -231,16 +231,16 @@ namespace FreshMvvm.Maui
         /// <summary>
         /// This method is used when you want to switch the selected page, 
         /// </summary>
-        public Task<FreshBasePageModel> SwitchSelectedMaster<T>() where T : FreshBasePageModel
+        public Task<IFreshPageModel> SwitchSelectedMaster<T>() where T : class, IFreshPageModel
         {
             return SwitchSelectedRootPageModel<T>();
         }
 
-        public async Task<FreshNavigationContainer> PushPageModelWithNewNavigation<T> (object data, bool animate = true) where T : FreshBasePageModel
+        public async Task<FreshNavigationContainer> PushPageModelWithNewNavigation<T> (object data, bool animate = true) where T : class, IFreshPageModel
         {
             var page = FreshPageModelResolver.ResolvePageModel<T>(data);
             var naviationContainer = new FreshNavigationContainer(page);
-            await PushNewNavigationServiceModal(naviationContainer, page.GetModel(), animate);
+            await PushNewNavigationServiceModal(naviationContainer, page.GetPageModel(), animate);
             return naviationContainer;
         }
 
@@ -266,7 +266,7 @@ namespace FreshMvvm.Maui
         /// <summary>
         /// Removes specific page/pagemodel from navigation
         /// </summary>
-        public void RemoveFromNavigation<TPageModel> (bool removeAll = false) where TPageModel : FreshBasePageModel =>
+        public void RemoveFromNavigation<TPageModel> (bool removeAll = false) where TPageModel : class, IFreshPageModel =>
             RemoveFromNavigation (typeof(TPageModel), removeAll);
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace FreshMvvm.Maui
             {
                 if (page.BindingContext?.GetType() == type) 
                 {
-                    page.GetModel()?.RaisePageWasPopped ();
+                    page.GetPageModel()?.RaisePageWasPopped ();
                     this._currentPage.Navigation.RemovePage (page);
                     if (!removeAll)
                         break;

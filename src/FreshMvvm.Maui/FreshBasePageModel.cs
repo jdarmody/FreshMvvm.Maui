@@ -1,15 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 using System.Runtime.CompilerServices;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace FreshMvvm.Maui
 {
-    public abstract class FreshBasePageModel : INotifyPropertyChanged
+    public abstract class FreshBasePageModel : INotifyPropertyChanged, IFreshPageModel
     {
         NavigationPage _navigationPage;
 
@@ -29,12 +26,18 @@ namespace FreshMvvm.Maui
         /// <summary>
         /// The previous page model, that's automatically filled, on push
         /// </summary>
-        public FreshBasePageModel PreviousPageModel { get; set; }
+        public IFreshPageModel PreviousPageModel { get; set; }
 
         /// <summary>
         /// A reference to the current page, that's automatically filled, on push
         /// </summary>
         public Page CurrentPage { get; set; }
+
+        public void SetCurrentPage(Page page)
+        {
+            CurrentPage = page;
+            WireEvents(page);
+        }
 
         /// <summary>
         /// Core methods are basic built in methods for the App including Pushing, Pop and Alert
@@ -74,12 +77,17 @@ namespace FreshMvvm.Maui
         /// <summary>
         /// Is true when this model is the first of a new navigation stack
         /// </summary>
-        public bool IsModalFirstChild;
+        public bool IsModalFirstChild { get; set; }
 
         /// <summary>
         /// Used when a page is shown modal and wants a new Navigation Stack
         /// </summary>
         public IFreshNavigationService PreviousNavigationService { internal set; get; }
+
+        public void SetPreviousNavigationService(IFreshNavigationService freshNavigationService)
+        {
+            PreviousNavigationService = freshNavigationService;
+        }
 
         /// <summary>
         /// Used when a page is shown modal and wants a new Navigation Stack
