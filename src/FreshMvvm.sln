@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreshMvvm.Tests", "FreshMvv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreshMvvm.Maui", "FreshMvvm.Maui\FreshMvvm.Maui.csproj", "{5F23F631-C204-4F75-98B7-772EF7F8EE46}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FreshMvvm.Maui.Observable", "FreshMvvm.Maui.Observable\FreshMvvm.Maui.Observable.csproj", "{754B023B-3F63-4F17-9193-EBC73552A3EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{5F23F631-C204-4F75-98B7-772EF7F8EE46}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F23F631-C204-4F75-98B7-772EF7F8EE46}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F23F631-C204-4F75-98B7-772EF7F8EE46}.Release|Any CPU.Build.0 = Release|Any CPU
+		{754B023B-3F63-4F17-9193-EBC73552A3EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{754B023B-3F63-4F17-9193-EBC73552A3EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{754B023B-3F63-4F17-9193-EBC73552A3EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{754B023B-3F63-4F17-9193-EBC73552A3EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

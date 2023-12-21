@@ -44,8 +44,8 @@ namespace FreshMvvm.Tests
             var masterDetailNavigation = new FreshMasterDetailNavigationContainer();
             masterDetailNavigation.AddPage<MockContentPageModel> ("Page1");
             masterDetailNavigation.AddPage<MockContentPageModel> ("Page2");
-            var pageModel1 = masterDetailNavigation.Pages["Page1"].GetPageFromNav().GetModel();
-            var pageModel2 = masterDetailNavigation.Pages ["Page2"].GetPageFromNav().GetModel();
+            var pageModel1 = masterDetailNavigation.Pages["Page1"].GetPageFromNav().GetPageModel();
+            var pageModel2 = masterDetailNavigation.Pages ["Page2"].GetPageFromNav().GetPageModel();
             pageModel1.CurrentNavigationService.Should().Be(masterDetailNavigation);
             pageModel2.CurrentNavigationService.Should().Be(masterDetailNavigation);
 
@@ -53,8 +53,8 @@ namespace FreshMvvm.Tests
             var tabbedNavigation = new FreshTabbedNavigationContainer();
             tabbedNavigation.AddTab<MockContentPageModel> ("Page1", null);
             tabbedNavigation.AddTab<MockContentPageModel> ("Page2", null);
-            var tabbedPageModel1 = tabbedNavigation.TabbedPages.First().GetModel();
-            var tabbedPageModel2 = tabbedNavigation.TabbedPages.Skip(1).Take(1).First().GetModel();
+            var tabbedPageModel1 = tabbedNavigation.TabbedPages.First().GetPageModel();
+            var tabbedPageModel2 = tabbedNavigation.TabbedPages.Skip(1).Take(1).First().GetPageModel();
             tabbedPageModel1.CurrentNavigationService.Should().Be(tabbedNavigation);
             tabbedPageModel2.CurrentNavigationService.Should().Be(tabbedNavigation);
 
@@ -64,10 +64,10 @@ namespace FreshMvvm.Tests
             var nav = new FreshNavigationContainer(page);
             pageModel.CurrentNavigationService.Should ().Be (nav);
 
-            //standard navigation should throw exception when binding context isn't a FreshBasePageModel
+            //standard navigation should throw exception when binding context isn't a IFreshPageModel
             var pageEx = new Page();
             Action standardNavExeption = () => new FreshNavigationContainer(pageEx);
-            standardNavExeption.Should().Throw<InvalidCastException> ().WithMessage ("BindingContext was not a FreshBasePageModel on this Page");
+            standardNavExeption.Should().Throw<InvalidCastException> ().WithMessage ("BindingContext was not a IFreshPageModel on this Page");
         }
 
         /// <summary>

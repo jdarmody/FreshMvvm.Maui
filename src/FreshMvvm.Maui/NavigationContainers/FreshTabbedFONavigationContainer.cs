@@ -22,10 +22,10 @@ namespace FreshMvvm.Maui
             _innerTabbedPage.Title = titleOfFirstTab;
         }
 
-        public virtual Page AddTab<T> (string title, string icon, object data = null) where T : FreshBasePageModel
+        public virtual Page AddTab<T> (string title, string icon, object data = null) where T : class, IFreshPageModel
         {
             var page = FreshPageModelResolver.ResolvePageModel<T> (data);
-            page.GetModel ().CurrentNavigationService = this;
+            page.GetPageModel ().SetCurrentNavigationService (this);
             _tabs.Add (page);
             var container = CreateContainerPageSafe (page);
             container.Title = title;
@@ -48,7 +48,7 @@ namespace FreshMvvm.Maui
             return page;
         }
 
-        public System.Threading.Tasks.Task PushPage (Page page, FreshBasePageModel model, bool modal = false, bool animate = true)
+        public System.Threading.Tasks.Task PushPage (Page page, IFreshPageModel model, bool modal = false, bool animate = true)
         {
             if (modal)
                 return this.Navigation.PushModalAsync (CreateContainerPageSafe (page));
@@ -78,15 +78,15 @@ namespace FreshMvvm.Maui
             }
         }
 
-        public Task<FreshBasePageModel> SwitchSelectedRootPageModel<T>() where T : FreshBasePageModel
+        public Task<IFreshPageModel> SwitchSelectedRootPageModel<T>() where T : class, IFreshPageModel
         {
             if (this.CurrentPage == _innerTabbedPage)
             {
-                var page = _tabs.FindIndex(o => o.GetModel().GetType().FullName == typeof(T).FullName);
+                var page = _tabs.FindIndex(o => o.GetPageModel().GetType().FullName == typeof(T).FullName);
                 if (page > -1)
                 {
                     _innerTabbedPage.CurrentPage = this._innerTabbedPage.Children[page];
-                    return Task.FromResult(_innerTabbedPage.CurrentPage.GetModel());
+                    return Task.FromResult(_innerTabbedPage.CurrentPage.GetPageModel());
                 }
             }
             else

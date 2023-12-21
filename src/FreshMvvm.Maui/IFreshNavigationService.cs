@@ -8,7 +8,7 @@ namespace FreshMvvm.Maui
     {
         Task PopToRoot(bool animate = true);
 
-		Task PushPage (Page page, FreshBasePageModel model, bool modal = false, bool animate = true);
+		Task PushPage (Page page, IFreshPageModel model, bool modal = false, bool animate = true);
 
         Task PopPage (bool modal = false, bool animate = true);
 
@@ -17,7 +17,7 @@ namespace FreshMvvm.Maui
         /// </summary>
         /// <returns>The BagePageModel, allows you to PopToRoot, Pass Data</returns>
         /// <param name="newSelected">The pagemodel of the root you want to change</param>
-        Task<FreshBasePageModel> SwitchSelectedRootPageModel<T>() where T : FreshBasePageModel;
+        Task<IFreshPageModel> SwitchSelectedRootPageModel<T>() where T : class, IFreshPageModel;
 
         void NotifyChildrenPageWasPopped();
     }

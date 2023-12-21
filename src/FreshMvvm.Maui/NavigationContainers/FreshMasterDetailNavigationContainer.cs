@@ -22,10 +22,10 @@ namespace FreshMvvm.Maui
             CreateMenuPage (menuTitle, menuIcon);
         }
 
-        public virtual void AddPage<T> (string title, object data = null) where T : FreshBasePageModel
+        public virtual void AddPage<T> (string title, object data = null) where T : class, IFreshPageModel
         {
             var page = FreshPageModelResolver.ResolvePageModel<T> (data);
-            page.GetModel ().CurrentNavigationService = this;
+            page.GetPageModel ().SetCurrentNavigationService(this);
             _pagesInner.Add(page);
             var navigationContainer = CreateContainerPage (page);
             _pages.Add (title, navigationContainer);
@@ -37,7 +37,7 @@ namespace FreshMvvm.Maui
         {
             var pageModelType = Type.GetType(modelName);
             var page = FreshPageModelResolver.ResolvePageModel(pageModelType, null);
-            page.GetModel().CurrentNavigationService = this;
+            page.GetPageModel().SetCurrentNavigationService(this);
             _pagesInner.Add(page);
             var navigationContainer = CreateContainerPage(page);
             _pages.Add(title, navigationContainer);
@@ -87,7 +87,7 @@ namespace FreshMvvm.Maui
             Flyout = navPage;
         }
 
-        public Task PushPage (Page page, FreshBasePageModel model, bool modal = false, bool animate = true)
+        public Task PushPage (Page page, IFreshPageModel model, bool modal = false, bool animate = true)
         {
             if (modal)
                 return Navigation.PushModalAsync (CreateContainerPageSafe(page));
@@ -126,13 +126,13 @@ namespace FreshMvvm.Maui
                 ((IFreshNavigationService)Detail).NotifyChildrenPageWasPopped();
         }
 
-        public Task<FreshBasePageModel> SwitchSelectedRootPageModel<T>() where T : FreshBasePageModel
+        public Task<IFreshPageModel> SwitchSelectedRootPageModel<T>() where T : class, IFreshPageModel
         {
-            var tabIndex = _pagesInner.FindIndex(o => o.GetModel().GetType().FullName == typeof(T).FullName);
+            var tabIndex = _pagesInner.FindIndex(o => o.GetPageModel().GetType().FullName == typeof(T).FullName);
 
             _listView.SelectedItem = _pageNames[tabIndex];
 
-            return Task.FromResult((Detail as NavigationPage).CurrentPage.GetModel());
+            return Task.FromResult((Detail as NavigationPage).CurrentPage.GetPageModel());
         }
     }
 }
