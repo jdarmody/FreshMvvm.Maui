@@ -69,21 +69,18 @@ namespace FreshMvvm.Maui
         /// This method switches the selected main page, TabbedPage the selected tab or if MasterDetail, works with custom pages also
         /// </summary>
         /// <returns>The BagePageModel, allows you to PopToRoot, Pass Data</returns>
-        /// <param name="newSelected">The pagemodel of the root you want to change</param>
         Task<FreshBasePageModel> SwitchSelectedRootPageModel<T>() where T : FreshBasePageModel;
 
         /// <summary>
         /// This method is used when you want to switch the selected page, 
         /// </summary>
         /// <returns>The BagePageModel, allows you to PopToRoot, Pass Data</returns>
-        /// <param name="newSelectedTab">The pagemodel of the root you want to change</param>
         Task<FreshBasePageModel> SwitchSelectedTab<T>() where T : FreshBasePageModel;
 
         /// <summary>
         /// This method is used when you want to switch the selected page, 
         /// </summary>
         /// <returns>The BagePageModel, allows you to PopToRoot, Pass Data</returns>
-        /// <param name="newSelectedMaster">The pagemodel of the root you want to change</param>
         Task<FreshBasePageModel> SwitchSelectedMaster<T>()where T : FreshBasePageModel;
 
         Task PopToRoot(bool animate);

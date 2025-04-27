@@ -10,14 +10,19 @@ namespace FreshMvvmApp
     {
         public App()
         { 
-            MainPage = new NavigationPage(new LaunchPage(this));
+            InitializeComponent();
+        }
+
+        protected override Window CreateWindow(IActivationState? activationState)
+        {
+            return new Window(new NavigationPage(new LaunchPage(this)));
         }
 
         public void LoadBasicNav()
         {
             var page = FreshPageModelResolver.ResolvePageModel<MainMenuPageModel>();
             var basicNavContainer = new FreshNavigationContainer(page);
-            MainPage = basicNavContainer;
+            Windows[0].Page = basicNavContainer;
         }
 
         public void LoadMasterDetail()
@@ -26,7 +31,7 @@ namespace FreshMvvmApp
             masterDetailNav.Init("Menu", "menu");
             masterDetailNav.AddPage<ContactListPageModel>("Contacts", null);
             masterDetailNav.AddPage<QuoteListPageModel>("Quotes", null);
-            MainPage = masterDetailNav;
+            Windows[0].Page = masterDetailNav;
         }
 
         public void LoadTabbedNav()
@@ -34,7 +39,7 @@ namespace FreshMvvmApp
             var tabbedNavigation = new FreshTabbedNavigationContainer();
             tabbedNavigation.AddTab<ContactListPageModel>("Contacts", "contacts", null);
             tabbedNavigation.AddTab<QuoteListPageModel>("Quotes", "document", null);
-            MainPage = tabbedNavigation;
+            Windows[0].Page = tabbedNavigation;
         }
 
         public void LoadFOTabbedNav()
@@ -42,12 +47,12 @@ namespace FreshMvvmApp
             var tabbedNavigation = new FreshTabbedFONavigationContainer("CRM");
             tabbedNavigation.AddTab<ContactListPageModel>("Contacts", "contacts", null);
             tabbedNavigation.AddTab<QuoteListPageModel>("Quotes", "document", null);
-            MainPage = tabbedNavigation;
+            Windows[0].Page = tabbedNavigation;
         }
 
         public void LoadCustomNav()
         {
-            MainPage = new CustomImplementedNav();
+            Windows[0].Page = new CustomImplementedNav();
         }
 
         public void LoadMultipleNavigation()
@@ -71,7 +76,7 @@ namespace FreshMvvmApp
 
             masterDetailsMultiple.Detail = detailPageArea; //set the second navigation container to the Detail
 
-            MainPage = masterDetailsMultiple;
+            Windows[0].Page = masterDetailsMultiple;
         }
     }
 }

@@ -10,7 +10,6 @@ namespace FreshMvvm.Maui.Extensions
         /// <summary>
         /// Registers the services in the service collection with the page resolver
         /// </summary>
-        /// <param name="sc"></param>
         public static void UseFreshMvvm(this MauiApp app)
         {
             DependancyService.RegisterServiceProvider(app.Services.GetService<IServiceProvider>());

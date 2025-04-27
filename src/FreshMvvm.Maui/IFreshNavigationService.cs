@@ -16,7 +16,6 @@ namespace FreshMvvm.Maui
         /// This method switches the selected main page, TabbedPage the selected tab or if MasterDetail, works with custom pages also
         /// </summary>
         /// <returns>The BagePageModel, allows you to PopToRoot, Pass Data</returns>
-        /// <param name="newSelected">The pagemodel of the root you want to change</param>
         Task<FreshBasePageModel> SwitchSelectedRootPageModel<T>() where T : FreshBasePageModel;
 
         void NotifyChildrenPageWasPopped();

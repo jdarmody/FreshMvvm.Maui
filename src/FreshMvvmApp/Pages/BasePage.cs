@@ -9,7 +9,7 @@ namespace FreshMvvmApp
         public BasePage ()
         {            
             ToolbarItems.Add (new ToolbarItem ("Home","", () => {                
-                Application.Current.MainPage = new NavigationPage (new LaunchPage ((App)Application.Current));
+                Application.Current.Windows[0].Page = new NavigationPage (new LaunchPage ((App)Application.Current));
             }));
         }
 
