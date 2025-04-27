@@ -62,7 +62,7 @@ namespace FreshMvvm.Maui
         protected virtual void CreateMenuPage (string menuPageTitle, string menuIcon = null)
         {
             _menuPage = new ContentPage ();
-            _menuPage.Title = menuPageTitle; 
+            _menuPage.Title = menuPageTitle;
 	    
             _listView.ItemsSource = _pageNames;
 
@@ -75,16 +75,18 @@ namespace FreshMvvm.Maui
                     IsPresented = false;
             };
 
-            _menuPage.Content = _listView;
-
-            var navPage = new NavigationPage (_menuPage) { Title = "Menu" };
+            _menuPage.Content = _listView;    
+            
+            // var navPage = new NavigationPage (_menuPage) { Title = "Menu" };
 
             if (!string.IsNullOrEmpty (menuIcon))
             {
-                navPage.IconImageSource = menuIcon;                
+                // navPage.IconImageSource = menuIcon;
+                _menuPage.IconImageSource = menuIcon;         
             }                
             
-            Flyout = navPage;
+            // Flyout = navPage;
+            Flyout = _menuPage;
         }
 
         public Task PushPage (Page page, FreshBasePageModel model, bool modal = false, bool animate = true)
