@@ -1,19 +1,14 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Threading.Tasks;
 using Microsoft.Maui.Controls;
 using System.Runtime.CompilerServices;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace FreshMvvm.Maui
 {
-    public abstract class FreshBasePageModel : INotifyPropertyChanged
+    public abstract class FreshBasePageModel : ObservableObject
     {
         NavigationPage _navigationPage;
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// This event is raise when a page is Popped, this might not be raise everytime a page is Popped. 
@@ -57,12 +52,10 @@ namespace FreshMvvm.Maui
         {
         }
 
+        [Obsolete("Use OnPropertyChanged instead")]
         protected void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
-            var handler = PropertyChanged;
-            if (handler != null) {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+            OnPropertyChanged(propertyName);
         }
 
         internal void WireEvents(Page page)
